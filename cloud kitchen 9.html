@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoM Made: A Cloud Kitchen with the Heart of Home</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #343a40;
+            scroll-behavior: smooth;
+        }
+        header {
+            background: linear-gradient(135deg, #ff5722, #e64a19);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        header h2 {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            font-weight: normal;
+        }
+        header img {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            height: 60px;
+            cursor: pointer;
+        }
+        .owner-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff3e0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .auth-buttons button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .auth-buttons button:hover {
+            background-color: #e64a19;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .modal-content button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background-color: #e64a19;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #343a40;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #ff5722;
+        }
+        .hero {
+            position: relative;
+            text-align: center;
+            color: white;
+            height: 500px;
+            overflow: hidden;
+        }
+        .hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .hero h2 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero p {
+            font-size: 1.3em;
+            position: relative;
+            z-index: 1;
+        }
+        .hero button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        .hero button:hover {
+            background-color: #e64a19;
+        }
+        .menu {
+            padding: 40px 20px;
+            text-align: center;
+            background-color: #ffffff;
+        }
+        .menu h2 {
+            margin-bottom: 30px;
+            font-size: 2em;
+            color: #ff5722;
+        }
+        .menu-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .menu-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+        .menu-item img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .menu-item h3 {
+            margin: 15px 0;
+            color: #343a40;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        footer a {
+            color: #ff5722;
+            text-decoration: none;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Disable pointer-events for the body when modal is open */
+        body.modal-active {
+            pointer-events: none;
+        }
+
+        body.modal-active .modal {
+            pointer-events: auto;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#"><img src="D:\cloud kitchen\MoM Made_Logo.png" alt="MoM Made Logo"></a>
+        <h1>MoM Made: A Cloud Kitchen with the Heart of Home</h1>
+        <h2 class="owner-name">Owned by Radha Rani</h2>
+        <div class="auth-buttons">
+            <button onclick="openModal('login')">Login</button>
+            <button onclick="openModal('signup')">Sign Up</button>
+        </div>
+    </header>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <h3>Login</h3>
+            <div id="login-error" class="error"></div>
+            <input type="text" id="login-identifier" placeholder="Email or Mobile Number" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button onclick="loginUser()">Login</button>
+            <button id="forgot-password-button" onclick="forgotPassword()">Forgot Password?</button>
+            <input type="text" id="forgot-otp" placeholder="Enter OTP" style="display:none;">
+            <button id="verify-forgot-otp" onclick="verifyForgotOTP()" style="display:none;">Verify OTP</button>
+            <!-- OTP Section -->
+        <input type="text" id="forgot-otp" placeholder="Enter OTP" style="display:none;">
+        <button id="verify-forgot-otp" onclick="verifyForgotOTP()" style="display:none;">Verify OTP</button>
+        
+        <!-- New Password Section -->
+        <input type="password" id="new-password" placeholder="New Password" style="display:none;">
+        <input type="password" id="confirm-new-password" placeholder="Confirm New Password" style="display:none;">
+        <button id="reset-password-button" onclick="resetPassword()" style="display:none;">Reset Password</button>
+        </div>
+    </div>
+
+    <!-- Sign-Up Modal -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <h3>Sign Up</h3>
+            <div id="signup-error" class="error"></div>
+            <input type="text" id="signup-name" placeholder="Full Name" required>
+            <input type="email" id="signup-email" placeholder="Email Address" required>
+            <input type="tel" id="signup-phone" placeholder="Mobile Number" required>
+            <input type="password" id="signup-password" placeholder="Password" required>
+            <button onclick="sendOTP('signup')">Send OTP</button>
+            <input type="text" id="signup-otp" placeholder="Enter OTP" style="display:none;">
+            <button onclick="verifyOTP('signup')" style="display:none;">Verify OTP</button>
+        </div>
+    </div>
+
+    <script>
+        // Open Modal
+        function openModal(type) {
+            const modal = document.getElementById(`${type}-modal`);
+            modal.style.display = 'flex';
+            document.body.classList.add('modal-active');
+
+            // Close modal if clicked outside the content
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal(type);
+                }
+            });
+        }
+        // Close Modal
+        function closeModal(type) {
+            const modal = document.getElementById(`${type}-modal`);
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-active');
+        }
+
+        // Placeholder functions for OTP actions
+        function sendOTP(type) {
+            alert(`${type} OTP sent!`);
+            document.getElementById(`${type}-otp`).style.display = 'block';
+        }
+
+        function verifyOTP(type) {
+            alert(`${type} OTP verified!`);
+        }
+
+        // Explore Menu Button Action
+        document.getElementById('explore-menu-button').addEventListener('click', () => {
+            alert('Explore Menu clicked!');
+        });
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function validatePhone(phone) {
+            const re = /^[0-9]{10}$/;
+            return re.test(phone);
+        }
+
+        function openModal(type) {
+            document.getElementById(type + '-modal').style.display = 'flex';
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + '-modal').style.display = 'none';
+        }
+
+        function sendOTP(type) {
+            let errorDiv = document.getElementById(`${type}-error`);
+            errorDiv.textContent = '';
+
+            if (type === 'signup') {
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const phone = document.getElementById('signup-phone').value;
+                const password = document.getElementById('signup-password').value;
+
+                if (!name || !email || !phone || !password) {
+                    errorDiv.textContent = 'All fields are required.';
+                    return;
+                }
+
+                if (!validateEmail(email)) {
+                    errorDiv.textContent = 'Invalid email format.';
+                    return;
+                }
+
+                if (!validatePhone(phone)) {
+                    errorDiv.textContent = 'Invalid phone number format.';
+                    return;
+                }
+            } else {
+                const identifier = document.getElementById('login-identifier').value;
+
+                if (!identifier) {
+                    errorDiv.textContent = 'Email or mobile number is required.';
+                    return;
+                }
+            }
+
+            alert(`OTP sent! (This is a placeholder; integrate with backend API)`);
+            document.getElementById(`${type}-otp`).style.display = 'block';
+            document.querySelector(`#${type}-modal button:nth-of-type(2)`).style.display = 'block';
+        }
+
+        function verifyOTP(type) {
+            const otp = document.getElementById(`${type}-otp`).value;
+
+            if (!otp) {
+                alert('Please enter the OTP');
+                return;
+            }
+
+            alert(`${type.charAt(0).toUpperCase() + type.slice(1)} successful! (This is a placeholder; integrate with backend API)`);
+            closeModal(type);
+        }
+
+        // Close modals when clicking outside the content
+        window.onclick = function(event) {
+            const loginModal = document.getElementById('login-modal');
+            const signupModal = document.getElementById('signup-modal');
+            if (event.target === loginModal) loginModal.style.display = 'none';
+            if (event.target === signupModal) signupModal.style.display = 'none';
+        };
+        function forgotPassword() {
+        document.getElementById('forgot-password-button').style.display = 'none';
+        document.getElementById('forgot-otp').style.display = 'block';
+        document.getElementById('verify-forgot-otp').style.display = 'block';
+        alert('OTP sent! (This is a placeholder; integrate with backend API)');
+    }
+
+    function verifyForgotOTP() {
+        const otp = document.getElementById('forgot-otp').value;
+
+        if (!otp) {
+            alert('Please enter the OTP');
+            return;
+        }
+
+        alert('OTP verified! You can now reset your password. (This is a placeholder; integrate with backend API)');
+    }
+    function loginUser() {
+        const identifier = document.getElementById('login-identifier').value;
+        const password = document.getElementById('login-password').value;
+
+        if (!identifier || !password) {
+            document.getElementById('login-error').textContent = 'Please fill in all fields.';
+            return;
+        }
+
+        // Simulate a login request
+        alert(`Logging in with identifier: ${identifier} and password: ${password}`);
+    }
+
+    function forgotPassword() {
+        document.getElementById('forgot-password-button').style.display = 'none';
+        document.getElementById('login-password').style.display = 'none';
+        document.getElementById('forgot-otp').style.display = 'block';
+        document.getElementById('verify-forgot-otp').style.display = 'block';
+        alert('OTP sent! (This is a placeholder; integrate with backend API)');
+    }
+
+    function verifyForgotOTP() {
+        const otp = document.getElementById('forgot-otp').value;
+
+        if (!otp) {
+            alert('Please enter the OTP');
+            return;
+        }
+
+        alert('OTP verified! You can now reset your password. (This is a placeholder; integrate with backend API)');
+        document.getElementById('forgot-otp').style.display = 'none';
+        document.getElementById('verify-forgot-otp').style.display = 'none';
+        document.getElementById('new-password').style.display = 'block';
+        document.getElementById('confirm-new-password').style.display = 'block';
+        document.getElementById('reset-password-button').style.display = 'block';
+    }
+
+    function resetPassword() {
+        const newPassword = document.getElementById('new-password').value;
+        const confirmNewPassword = document.getElementById('confirm-new-password').value;
+
+        if (!newPassword || !confirmNewPassword) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            alert('Passwords do not match. Please try again.');
+            return;
+        }
+
+        alert('Password successfully reset! (This is a placeholder; integrate with backend API)');
+        location.reload(); // Reload the page or redirect as needed
+    }
+    </script>
+    <nav>
+        <a href="#menu">Menu</a>
+        <a href="#about">About Us</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <style>
+        header {
+            background: linear-gradient(135deg, #ff5722, #e64a19);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header img {
+            position: absolute;
+            top: 5px; /* Adjust this to your liking */
+            left: 30px; /* Adjust this to your liking */
+            height: 150px; /* Fixed height for logo */
+            width: auto; /* Keep the aspect ratio of the logo */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        header h2 {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            font-weight: normal;
+        }
+
+        .owner-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff3e0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+<section class="hero">
+        <!-- Background Video -->
+        <video autoplay loop muted playsinline>
+            <source src="D:\cloud kitchen\Backgroung_video.mp4" type="video/mp4">
+        </video>
+        <!-- Overlay Content -->
+        <h2>Delicious Food Delivered to Your Doorstep</h2>
+        <p>Experience the taste of home with every bite!</p>
+        <button class="explore-button">
+            <a href="#menu">Explore Menu</a>
+        </button>
+    </section>
+    
+    <style>
+        .hero {
+            position: relative;
+            text-align: center;
+            color: white;
+            height: 500px;
+            overflow: hidden;
+        }
+    
+        .hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+    
+        .hero h2 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+    
+        .hero p {
+            font-size: 1.3em;
+            position: relative;
+            z-index: 1;
+        }
+    
+        .explore-button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+    
+        .explore-button a {
+            color: white;
+            text-decoration: none;
+        }
+    
+        .explore-button:hover {
+            background-color: #e64a19;
+        }
+    </style>
+    <section id="menu" class="menu">
+        <h2>Our Menu</h2>
+        <div class="menu-items">
+            <div class="menu-item">
+                <img src="D:\cloud kitchen\Rajma_Plain Rice.jpeg" alt="Rajma Chawal">
+                <h3>Rajma Chawal</h3>
+                <p>Healthy, tasty, and vegetarian homemade Rajma Chawal.</p>
+                <button>Order Now</button>
+            </div>
+            <div class="menu-item">
+                <img src="D:\cloud kitchen\Rajma_Jeera Rice.jpeg" alt="Jeera Rice">
+                <h3>Rajma with Jeera Rice</h3>
+                <p>Freshly prepared Jeera Rice and Rajma.</p>
+                <button>Order Now</button>
+            </div>
+            <div class="menu-item">
+                <img src="D:\cloud kitchen\paneer_Butter_Masala.jpg" alt="Paneer Butter Masala">
+                <h3>Paneer Butter Masala</h3>
+                <p>Rich and creamy paneer cooked in butter masala sauce.</p>
+                <button>Order Now</button>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="menu">
+        <h2>About Us</h2>
+        <p>"MoM Made is a cloud kitchen dedicated to bringing you the flavors of home-cooked meals. We believe in quality, freshness, and the joy of sharing delicious food. Every dish we prepare is crafted with love and the finest ingredients to ensure a delightful dining experience. Whether you're craving comforting classics or exploring new tastes, our menu is designed to satisfy every palate. At MoM Made, we don't just serve food; we create moments of happiness and connection through every bite."</p>
+    </section>
+    <section id="contact" class="menu">
+        <h2>Contact Us</h2>
+        <p>Email: <a href="mailto:radharani95698@gmail.com">radharani95698@gmail.com</a></p>
+        <p>Phone: <a href="tel:+917906136847">+91-7906136847</a></p>
+        <p>Find Us: <a href="https://maps.app.goo.gl/7gsPHtRUTfBSaSqV9">Google Maps Link</a></p>
+    </section>
+    <footer>
+        <p>&copy; 2025 MoM Made. All rights reserved.</p>
+        <p>Follow us on <a href="#">Facebook</a>, <a href="#">Instagram</a>, and <a href="#">Twitter</a>.</p>
+        <p>Subscribe to our Newsletter:</p>
+        <input type="email" placeholder="Enter your email" style="padding: 10px; width: 200px;">
+        <button style="padding: 10px 20px; background-color: #ff5722; color: white; border: none; border-radius: 5px;">Subscribe</button>
+    <footer>
+        <p>&copy; 2025 MoM Made. All rights reserved.</p>
+    </footer>
+</body>
+</html>
